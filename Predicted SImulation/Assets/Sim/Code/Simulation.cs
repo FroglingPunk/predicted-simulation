@@ -90,7 +90,6 @@ public class Simulation : MonoBehaviour
 
                 if (_field.Size != _fieldSizeNextCycle)
                 {
-                    _field.Clear();
                     await _field.GenerateCellsAsync(_fieldSizeNextCycle);
                     _field.CreateAndInitUnits(_unitsCountNextCycle, _currentTick);
                 }

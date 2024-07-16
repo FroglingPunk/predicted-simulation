@@ -113,9 +113,8 @@ public class Field
 
     public void Clear()
     {
-        RemoveUnits(Units.Count, 0);
-
         Object.Destroy(_fieldTransform.gameObject);
+
         CellsTransform = null;
         CellsState = null;
 
@@ -154,9 +153,11 @@ public class Field
             }
 
             var unitFood = unit.Target;
-
-            Food.Remove(unitFood.ID.y * Size + unitFood.ID.x);
-            Object.Destroy(unitFood.Transform.gameObject);
+            if (unitFood != null)
+            {
+                Food.Remove(unitFood.ID.y * Size + unitFood.ID.x);
+                Object.Destroy(unitFood.Transform.gameObject);
+            }
 
             Object.Destroy(unit.Transform.gameObject);
             Units.RemoveAt(0);
@@ -190,7 +191,7 @@ public class Field
     private Unit CreateUnit(int currentTick)
     {
         var unitPoint = GetFreePointForUnit(currentTick);
-        var unitGo = Object.Instantiate(_unitGoPrefab);
+        var unitGo = Object.Instantiate(_unitGoPrefab, _fieldTransform);
         var unit = new Unit(unitPoint, unitGo.transform);
         Units.Add(unit);
 
@@ -205,7 +206,7 @@ public class Field
     public Food CreateFood(Unit unit)
     {
         var foodPoint = GetFreePointForFood(unit);
-        var foodGo = Object.Instantiate(_foodGoPrefab);
+        var foodGo = Object.Instantiate(_foodGoPrefab, _fieldTransform);
         var food = new Food(foodPoint, foodGo.transform);
         Food.Add(foodPoint.y * Size + foodPoint.x, food);
         unit.SetTargetFood(food);
