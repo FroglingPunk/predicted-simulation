@@ -23,9 +23,17 @@ public class SimPrefsPanel : MonoBehaviour
         _sliderUnitsCount.SetValueWithoutNotify(SimPrefs.UnitsCount.Value);
         _sliderSimulationSpeed.SetValueWithoutNotify(SimPrefs.SimulationSpeed.Value);
 
+        _sliderUnitsCount.OnEndDragAsObservable().Subscribe(_ =>
+        {
+            var sliderValue = (int)_sliderUnitsCount.value;
+            SimPrefs.UnitsCount.Value = sliderValue;
+        });
 
-        _sliderUnitsCount.onValueChanged.AddListener((value) => SimPrefs.UnitsCount.Value = (int)value);
-        _sliderSimulationSpeed.onValueChanged.AddListener((value) => SimPrefs.SimulationSpeed.Value = value);
+        _sliderSimulationSpeed.OnEndDragAsObservable().Subscribe(_ =>
+       {
+           var sliderValue = (int)_sliderSimulationSpeed.value;
+           SimPrefs.SimulationSpeed.Value = sliderValue;
+       });
 
         _sliderFieldSize.OnEndDragAsObservable().Subscribe(_ =>
         {

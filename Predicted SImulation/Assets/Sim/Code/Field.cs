@@ -124,14 +124,20 @@ public class Field
 
     public void CreateAndInitUnits(int count, int currentTick)
     {
+        var newUnits = new List<Unit>();
+
         for (var i = 0; i < count; i++)
         {
-            CreateUnit(currentTick);
+            var newUnit = CreateUnit(currentTick);
+            if (newUnit != null)
+            {
+                newUnits.Add(newUnit);
+            }
         }
 
-        for (var i = 0; i < Units.Count; i++)
+        for (var i = 0; i < newUnits.Count; i++)
         {
-            var unit = Units[i];
+            var unit = newUnits[i];
             var food = CreateFood(unit);
 
             var path = PathFinder.Find(unit.ID, food.ID, CellsState, Size, currentTick, _predictionRange);
@@ -191,6 +197,12 @@ public class Field
     private Unit CreateUnit(int currentTick)
     {
         var unitPoint = GetFreePointForUnit(currentTick);
+
+        if (unitPoint.x == -1)
+        {
+            return null;
+        }
+
         var unitGo = Object.Instantiate(_unitGoPrefab, _fieldTransform);
         var unit = new Unit(unitPoint, unitGo.transform);
         Units.Add(unit);
@@ -215,7 +227,7 @@ public class Field
 
     private Vector2Int GetFreePointForUnit(int currentTick)
     {
-        while (true)
+        for (var i = 0; i < Size * Size; i++)
         {
             var x = Random.Range(0, Size);
             var y = Random.Range(0, Size);
@@ -225,6 +237,19 @@ public class Field
                 return new Vector2Int(x, y);
             }
         }
+
+        for (var y = 0; y < Size; y++)
+        {
+            for (var x = 0; x < Size; x++)
+            {
+                if (CellsState[x, y, currentTick] == 0 && CellsState[x, y, currentTick + 1] == 0)
+                {
+                    return new Vector2Int(x, y);
+                }
+            }
+        }
+
+        return new Vector2Int(-1, -1);
     }
 
     private Vector2Int GetFreePointForFood(Unit unit)

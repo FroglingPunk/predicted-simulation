@@ -13,7 +13,7 @@ public class PathFinder
 
         if (currentTick == 0)
         {
-            for (var p = 0; p < predictionRange; p++)
+            for (var p = 0; p < predictionRange + 1; p++)
             {
                 field[from.x, from.y, p] = 0;
             }
